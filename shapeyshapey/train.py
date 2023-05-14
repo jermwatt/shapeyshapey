@@ -2,13 +2,26 @@ import pytorch_lightning as pl
 from model import NN
 from dataset import MnistDataModule
 from callbacks import MyPrintingCallback, EarlyStopping
-from pytorch_lightning.loggers import TensorBoardLogger 
+from pytorch_lightning.loggers import TensorBoardLogger
+from pytorch_lightning.profilers import PyTorchProfiler
+import torch
 import config
 import os
 parent_dir = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-
+tb_dir = parent_dir + '/tb_logs'
 
 if __name__ == '__main__':
+    # profiler
+    profiler = PyTorchProfiler(
+        on_trace_ready=torch.profiler.tensorboard_trace_handler(tb_dir),
+        trace_memory=True,
+        schedule=torch.profiler.schedule(
+            skip_first=1,
+            wait=1,
+            warmup=1,
+            active=20)
+    )
+
     # logger
     logger = TensorBoardLogger(
         save_dir=parent_dir + '/tb_logs',
@@ -28,7 +41,8 @@ if __name__ == '__main__':
                lr=config.LEARNING_RATE).to(config.device)
 
     # setup trainer
-    trainer = pl.Trainer(logger=logger,
+    trainer = pl.Trainer(profiler=profiler,
+                         logger=logger,
                          min_epochs=1,
                          max_epochs=2,
                          accelerator=config.ACCELERATOR,

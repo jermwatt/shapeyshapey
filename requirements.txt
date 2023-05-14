@@ -5,3 +5,4 @@ torchvision
 pytorch_lightning
 lightning[extra]
 tensorboard
+torch-tb-profiler
