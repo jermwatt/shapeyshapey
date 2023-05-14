@@ -1,5 +1,11 @@
 # local
 /dataset
+/lightning_logs
+/.ipynb_checkpoints
+/.vscode
+/.pytest_cache
+/pytorch_auto 
+/.mypy_cache
 
 # Byte-compiled / optimized / DLL files
 __pycache__/
