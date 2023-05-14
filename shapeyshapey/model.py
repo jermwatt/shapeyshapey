@@ -4,6 +4,7 @@ import pytorch_lightning as pl
 import torchmetrics
 from metrics import MyAccuracy
 from torch import nn
+import torchvision
 
 
 # network model
@@ -36,7 +37,7 @@ class NN(pl.LightningModule):
         loss = self.loss_fn(logits, y)
         return loss, logits, y
 
-    def training_step(self, batch, batch_idx):
+    def training_step(self, batch, batch_idx):        
         loss, logits, y = self._common_step(batch, batch_idx)
         accuracy = self.my_accuracy(logits, y)
         f1score = self.f1score(logits, y)
@@ -47,6 +48,16 @@ class NN(pl.LightningModule):
                       on_epoch=True,
                       prog_bar=True,
                       sync_dist=True)
+
+        # adding some images for testing purposes to logger
+        x, y = batch
+        if batch_idx == 100:
+            x = x[:8]
+            grid = torchvision.utils.make_grid(x.view(-1, 1, 28, 28))
+            self.logger.experiment.add_image('mnist_images',
+                                             grid,
+                                             self.global_step)
+
         return loss
 
     def validation_step(self, batch, batch_idx):

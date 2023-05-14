@@ -29,7 +29,11 @@ class MnistDataModule(pl.LightningDataModule):
         # define entire dataset ,transform
         entire_dataset = datasets.MNIST(
             root=self.data_dir, train=True,
-            transform=transforms.ToTensor(),
+            transform=transforms.Compose([
+                # transforms.RandomVerticalFlip(),
+                # transforms.RandomHorizontalFlip(),
+                transforms.ToTensor()
+            ]),
             download=False
         )
 
