@@ -1,6 +1,7 @@
 import pytorch_lightning as pl
 from model import NN
 from dataset import MnistDataModule
+from callbacks import MyPrintingCallback, EarlyStopping
 import config
 import os
 parent_dir = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
@@ -20,7 +21,15 @@ if __name__ == '__main__':
                lr=config.LEARNING_RATE).to(config.device)
 
     # setup trainer
-    trainer = pl.Trainer(max_epochs=3)
+    trainer = pl.Trainer(min_epochs=1,
+                         max_epochs=2,
+                         accelerator=config.ACCELERATOR,
+                         callbacks=[MyPrintingCallback(),
+                                    EarlyStopping(monitor='val_loss')],
+                         precision=config.PRECISION,
+                         devices=config.DEVICES,
+                         num_nodes=1)
+
     trainer.fit(model, dm)
     trainer.validate(model, dm)
     trainer.test(model, dm)

@@ -16,6 +16,6 @@ DATA_DIR = './dataset'
 NUM_WORKERS = 4
 
 # Compute related
-ACCELERATOR = "gpu" if torch.cuda.is_available() else None
-DEVICES = None  # [0]
+ACCELERATOR = "gpu" if torch.cuda.is_available() else "cpu"
+DEVICES = 4
 PRECISION = 16 if torch.cuda.is_available() else 32

@@ -34,7 +34,7 @@ class NN(pl.LightningModule):
         x = x.reshape(x.shape[0], -1)
         logits = self.forward(x)
         loss = self.loss_fn(logits, y)
-        return loss, logits, y 
+        return loss, logits, y
 
     def training_step(self, batch, batch_idx):
         loss, logits, y = self._common_step(batch, batch_idx)
@@ -45,7 +45,8 @@ class NN(pl.LightningModule):
                        "train_f1score": f1score},
                       on_step=False,
                       on_epoch=True,
-                      prog_bar=True)
+                      prog_bar=True,
+                      sync_dist=True)
         return loss
 
     def validation_step(self, batch, batch_idx):
@@ -55,7 +56,8 @@ class NN(pl.LightningModule):
                       "val_accuracy": accuracy},
                       on_step=False,
                       on_epoch=True,
-                      prog_bar=True)
+                      prog_bar=True,
+                      sync_dist=True)
         return loss
 
     def test_step(self, batch, batch_idx):
