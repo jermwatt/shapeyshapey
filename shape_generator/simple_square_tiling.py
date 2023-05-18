@@ -3,6 +3,7 @@ from PIL import Image
 import matplotlib.pyplot as plt 
 import idx2numpy
 import random
+import torch 
 
 
 # split array pairs list into train and test sets
@@ -33,31 +34,47 @@ def get_random_image_pairs(images):
 
 
 def save_image_pairs_as_idx(image_pairs, output_file):
-    # Convert the image pairs to a numpy array
-    image_pairs_array = np.array(image_pairs)
+    # Convert the image pairs to a numpy array with desired byte order
+    image_pairs_array = np.array(image_pairs, dtype=np.uint8)
+    image_pairs_array = image_pairs_array.byteswap().newbyteorder('>')
 
     # Save the image pairs as an IDX file
     idx2numpy.convert_to_file(output_file, image_pairs_array)
 
 
+# def save_image_pairs_as_idx(image_pairs, output_file):
+#     # Convert the image pairs to a numpy array
+#     image_pairs_array = np.array(image_pairs)
+
+#     # Save the image pairs as an IDX file
+#     idx2numpy.convert_to_file(output_file, image_pairs_array)
+
+
 def save_images_as_idx(images, output_file):
-    # Convert the images and labels to numpy arrays
-    images_array = np.array(images)
-    # labels_array = np.array(labels)
+    # Convert the input tensor to a torch tensor
+    tensor = torch.tensor(np.array(images))
+
+    # Convert the torch tensor to a numpy array
+    images_array = tensor.numpy()
 
     # Save the images and labels as IDX files
     idx2numpy.convert_to_file(output_file, images_array)
-    # idx2numpy.convert_to_file(output_file.replace('.ubyte', '-labels.ubyte'), labels_array)
 
 
 def read_all_image_pairs_from_idx(file_path):
     # Load the IDX file and convert it to a numpy array
     image_pairs_array = idx2numpy.convert_from_file(file_path)
 
+    # convert to float32
+    image_pairs_array = image_pairs_array.astype(np.float32)
+
     # Split the array into individual pairs
     num_pairs = image_pairs_array.shape[0]
     image_pairs = np.split(image_pairs_array, num_pairs, axis=0)
 
+    # loop over pairs, extract and convert to torch tensors
+    for i in range(len(image_pairs)):
+        image_pairs[i] = torch.from_numpy(image_pairs[i]).float()
     return image_pairs
 
 
