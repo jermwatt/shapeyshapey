@@ -15,10 +15,7 @@ class ShapeDataset(Dataset):
                  transform=None):
         super().__init__()
         # Example usage
-        data = read_all_image_pairs_from_idx(data_path)
-        self.dataset = [[torch.tensor(v[0], dtype=torch.float32),
-                         torch.tensor(v[1], dtype=torch.float32)] 
-                        for v in data]
+        self.dataset = read_all_image_pairs_from_idx(data_path)
         self.transform = transform
 
     def __len__(self) -> int:
@@ -26,7 +23,7 @@ class ShapeDataset(Dataset):
 
     def __getitem__(self, index: int) -> tuple:
         if self.transform:
-            return self.transform(self.dataset[index][0]), \
-                   self.transform(self.dataset[index][1])
+            return self.transform(self.dataset[index][0][0]), \
+                   self.transform(self.dataset[index][0][1])
 
-        return self.dataset[index][0], self.dataset[index][1]
+        return self.dataset[index][0][0], self.dataset[index][0][1]

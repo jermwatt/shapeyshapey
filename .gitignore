@@ -1,5 +1,6 @@
 # local
 /dataset
+/shape_dataset
 /tb_logs
 /lightning_logs
 /.ipynb_checkpoints

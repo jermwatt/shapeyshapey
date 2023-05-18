@@ -16,7 +16,6 @@ class NN(pl.LightningModule):
         - act_fn : Activation function used throughout the encoder network
     """
 
-
     def __init__(self,
                  latent_dim: int,
                  encoder_class: object = Encoder,
@@ -59,6 +58,13 @@ class NN(pl.LightningModule):
         z = self.encoder(x)
         x_hat = self.decoder(z)
         loss = self.loss_fn(x_hat, y)
+        
+        # print(f"batch_idx: {batch_idx}")
+        # print(f"loss: {loss}")
+        # print('sum of x is: ', torch.sum(x))
+        # print('sum of x_hat is: ', torch.sum(x_hat))
+        # print('sum of y is: ', torch.sum(y))
+        
         return loss, x, x_hat, y
 
     def training_step(self, batch, batch_idx):        
@@ -71,12 +77,16 @@ class NN(pl.LightningModule):
 
         # adding some images for testing purposes to logger
         x, y = batch
-        if batch_idx == 50:
+        if batch_idx == 2:
             x = x[:5]
             x_hat = x_hat[:5]
+            y = y[:5]
 
-            imgs = torch.stack([x.view(-1,1,self.width,self.height), x_hat.view(-1,1,self.width,self.height), y.view(-1,1,self.width,self.height)], dim=1).flatten(0, 1)
-            grid = torchvision.utils.make_grid(imgs, nrow=2, normalize=True, range=(-1, 1))            
+            imgs = torch.stack([x.view(-1,1,self.width,self.height), 
+                                x_hat.view(-1,1,self.width,self.height), 
+                                y.view(-1,1,self.width,self.height)], dim=1).flatten(0, 1)
+            
+            grid = torchvision.utils.make_grid(imgs, nrow=3 , normalize=True, range=(-1, 1))            
             self.logger.experiment.add_image('original vs reconstruction',
                                              grid,
                                              self.global_step)

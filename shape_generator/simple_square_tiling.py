@@ -73,8 +73,8 @@ def read_all_image_pairs_from_idx(file_path):
     image_pairs = np.split(image_pairs_array, num_pairs, axis=0)
 
     # loop over pairs, extract and convert to torch tensors
-    for i in range(len(image_pairs)):
-        image_pairs[i] = torch.from_numpy(image_pairs[i]).float()
+    # for i in range(len(image_pairs)):
+    #     image_pairs[i] = torch.from_numpy(image_pairs[i]).float()
     return image_pairs
 
 
