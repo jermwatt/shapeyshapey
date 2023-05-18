@@ -5,15 +5,71 @@ import torchvision.transforms as transforms
 from torch.utils.data import DataLoader
 from torch.utils.data import random_split
 import pytorch_lightning as pl
+from torch.utils.data import Dataset
+from torch.utils.data import DataLoader
+from shape_data_def import ShapeDataset
+
 
 # parent of current file directory
 import os
 parent_dir = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
 
+class ShapeDataModule(pl.LightningDataModule): 
+    def __init__(self,
+                 data_dir: str = parent_dir + '/dataset',
+                 batch_size: int = 64,
+                 num_workers: int = 4):
+        super().__init__()
+        self.data_dir = data_dir
+        self.batch_size = batch_size
+        self.num_workers = num_workers
+
+    def prepare_data(self) -> None:
+        pass
+
+    def setup(self, stage=None):
+        # define entire dataset ,transform
+        transform = transforms.Compose([
+            transforms.Resize((32, 32)),
+            transforms.ToTensor()
+        ])
+        entire_dataset = ShapeDataset(
+            data_path=parent_dir + '/shape_dataset/test_shapes.csv',
+            transform=transform
+        )
+
+        # split dataset
+        self.train_ds, self.val_ds = random_split(entire_dataset, [0.8, 0.2])
+
+        # define test dataset
+        self.test_ds = ShapeDataset(
+            data_path=parent_dir + '/shape_dataset/test_shapes.csv',
+            transform=transform
+        )
+
+    def train_dataloader(self) -> TRAIN_DATALOADERS:
+        return DataLoader(self.train_ds, 
+                          batch_size=self.batch_size, 
+                          num_workers=self.num_workers,
+                          shuffle=True)
+
+    def val_dataloader(self) -> EVAL_DATALOADERS:
+        return DataLoader(self.val_ds,
+                          batch_size=self.batch_size,
+                          num_workers=self.num_workers,
+                          shuffle=False)
+
+    def test_dataloader(self) -> EVAL_DATALOADERS:
+        return DataLoader(self.test_ds,
+                          batch_size=self.batch_size,
+                          num_workers=self.num_workers,
+                          shuffle=False)
+
+
 class MnistDataModule(pl.LightningDataModule): 
     def __init__(self,
-                 data_dir: str = parent_dir + '/test',
+                 data_dir: str = parent_dir + '/dataset',
                  batch_size: int = 64,
                  num_workers: int = 4):
         super().__init__()
