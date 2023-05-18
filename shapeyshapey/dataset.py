@@ -13,6 +13,8 @@ from shape_data_def import ShapeDataset
 # parent of current file directory
 import os
 parent_dir = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+train_set_path = '/Users/wattjer/Desktop/shapeyshapey/shape_dataset/train-shape-images-idx3-ubyte'
+test_set_path = '/Users/wattjer/Desktop/shapeyshapey/shape_dataset/test-shape-images-idx3-ubyte'
 
 
 class ShapeDataModule(pl.LightningDataModule): 
@@ -31,11 +33,11 @@ class ShapeDataModule(pl.LightningDataModule):
     def setup(self, stage=None):
         # define entire dataset ,transform
         transform = transforms.Compose([
-            transforms.Resize((32, 32)),
+            # transforms.Resize((32, 32)),
             transforms.ToTensor()
         ])
         entire_dataset = ShapeDataset(
-            data_path=parent_dir + '/shape_dataset/test_shapes.csv',
+            data_path=train_set_path,
             transform=transform
         )
 
@@ -44,12 +46,12 @@ class ShapeDataModule(pl.LightningDataModule):
 
         # define test dataset
         self.test_ds = ShapeDataset(
-            data_path=parent_dir + '/shape_dataset/test_shapes.csv',
+            data_path=test_set_path,
             transform=transform
         )
 
     def train_dataloader(self) -> TRAIN_DATALOADERS:
-        return DataLoader(self.train_ds, 
+        return DataLoader(self.train_ds,
                           batch_size=self.batch_size, 
                           num_workers=self.num_workers,
                           shuffle=True)

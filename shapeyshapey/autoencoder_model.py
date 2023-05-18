@@ -58,11 +58,11 @@ class NN(pl.LightningModule):
         x, y = batch
         z = self.encoder(x)
         x_hat = self.decoder(z)
-        loss = self.loss_fn(x_hat, x)
-        return loss, x_hat, x
+        loss = self.loss_fn(x_hat, y)
+        return loss, x, x_hat, y
 
     def training_step(self, batch, batch_idx):        
-        loss, x_hat, y = self._common_step(batch, batch_idx)
+        loss, x, x_hat, y = self._common_step(batch, batch_idx)
         self.log_dict({"train_loss": loss},
                       on_step=False,
                       on_epoch=True,
@@ -75,7 +75,7 @@ class NN(pl.LightningModule):
             x = x[:5]
             x_hat = x_hat[:5]
 
-            imgs = torch.stack([x.view(-1,1,self.width,self.height), x_hat.view(-1,1,self.width,self.height)], dim=1).flatten(0, 1)
+            imgs = torch.stack([x.view(-1,1,self.width,self.height), x_hat.view(-1,1,self.width,self.height), y.view(-1,1,self.width,self.height)], dim=1).flatten(0, 1)
             grid = torchvision.utils.make_grid(imgs, nrow=2, normalize=True, range=(-1, 1))            
             self.logger.experiment.add_image('original vs reconstruction',
                                              grid,
@@ -84,7 +84,7 @@ class NN(pl.LightningModule):
         return loss
 
     def validation_step(self, batch, batch_idx):
-        loss, x_hat, y = self._common_step(batch, batch_idx)
+        loss, x, x_hat, y = self._common_step(batch, batch_idx)
         self.log_dict({"val_loss": loss},
                       on_step=False,
                       on_epoch=True,
@@ -93,7 +93,7 @@ class NN(pl.LightningModule):
         return loss
 
     def test_step(self, batch, batch_idx):
-        loss, x_hat, y = self._common_step(batch, batch_idx)
+        loss, x, x_hat, y = self._common_step(batch, batch_idx)
         self.log("test_loss", loss)
         return loss
 
