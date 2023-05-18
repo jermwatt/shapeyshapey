@@ -87,7 +87,7 @@ class NN(pl.LightningModule):
                                 y.view(-1,1,self.width,self.height)], dim=1).flatten(0, 1)
             
             grid = torchvision.utils.make_grid(imgs, nrow=3 , normalize=True, range=(-1, 1))            
-            self.logger.experiment.add_image('original vs reconstruction',
+            self.logger.experiment.add_image('input vs reconstruction vs output',
                                              grid,
                                              self.global_step)
 
