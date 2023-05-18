@@ -13,7 +13,7 @@ parent_dir = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
 class MnistDataModule(pl.LightningDataModule): 
     def __init__(self,
-                 data_dir: str = parent_dir + '/dataset',
+                 data_dir: str = parent_dir + '/test',
                  batch_size: int = 64,
                  num_workers: int = 4):
         super().__init__()
@@ -30,8 +30,7 @@ class MnistDataModule(pl.LightningDataModule):
         entire_dataset = datasets.MNIST(
             root=self.data_dir, train=True,
             transform=transforms.Compose([
-                # transforms.RandomVerticalFlip(),
-                # transforms.RandomHorizontalFlip(),
+                transforms.Resize((32, 32)),
                 transforms.ToTensor()
             ]),
             download=False
@@ -39,9 +38,12 @@ class MnistDataModule(pl.LightningDataModule):
 
         # define test dataset
         self.test_ds = datasets.MNIST(
-            root=self.data_dir, 
+            root=self.data_dir,
             train=False,
-            transform=transforms.ToTensor(),
+            transform=transforms.Compose([
+                transforms.Resize((32, 32)),
+                transforms.ToTensor()
+            ]),
             download=False
         )
 
