@@ -1,6 +1,6 @@
 import pytorch_lightning as pl
-from autoencoder_model import NN
-from dataset import MnistDataModule, ShapeDataModule
+from model import NN
+from dataset import ShapeDataModule
 from callbacks import MyPrintingCallback, EarlyStopping
 from pytorch_lightning.loggers import TensorBoardLogger
 import config
@@ -20,23 +20,16 @@ if __name__ == '__main__':
     dm = ShapeDataModule(
         data_dir=parent_dir + '/shape_dataset',
         batch_size=config.BATCH_SIZE,
-        num_workers=4
+        num_workers=1
     )
 
-    # dm = MnistDataModule(
-    #     data_dir=parent_dir + '/shape_dataset',
-    #     batch_size=config.BATCH_SIZE,
-    #     num_workers=4
-    # )
-
     # Initialize network
-    model = NN(lr=config.LEARNING_RATE,
-               latent_dim=256).to(config.device)
+    model = NN(lr=config.LEARNING_RATE).to(config.device)
 
     # setup trainer
     trainer = pl.Trainer(logger=logger,
                          min_epochs=1,
-                         max_epochs=20,
+                         max_epochs=10,
                          accelerator=config.ACCELERATOR,
                          callbacks=[MyPrintingCallback(),
                                     EarlyStopping(monitor='val_loss')],
