@@ -3,35 +3,27 @@ import torch.nn.functional as F
 import pytorch_lightning as pl
 import torchvision
 from encoder import Encoder
-import scipy.optimize
 
-def project_doubly_stochastic(X):
+
+def project_doubly_stochastic(X, max_iter=10):
     # Ensure that the tensor is non-negative
     X = torch.clamp(X, min=0)
 
     # Normalize rows and columns iteratively
-    for _ in range(10):
+    for _ in range(max_iter):
         # Normalize rows
-        X /= X.sum(dim=1, keepdim=True)
+        X /= X.sum(dim=-1, keepdim=True)
 
         # Normalize columns
         X /= X.sum(dim=0, keepdim=True)
 
-    # Convert tensor to numpy array
-    X_np = X.detach().numpy()
+    # # print row sum of X
+    # print('row sum of X is: ', torch.sum(X, dim=-1))   
 
-    # Perform linear sum assignment using the Hungarian algorithm
-    row_indices, col_indices = scipy.optimize.linear_sum_assignment(-X_np)
+    # # print column sum of X
+    # print('column sum of X is: ', torch.sum(X, dim=0))
 
-    # Create a tensor with zeros
-    X_projected = torch.zeros_like(X)
-
-    # Assign the non-zero values from the original tensor to the projected tensor
-    X_projected[row_indices, col_indices] = X[row_indices, col_indices]
-
-    return X_projected
-
-
+    return X
 
 
 # network model
@@ -67,11 +59,11 @@ class NN(pl.LightningModule):
 
         # project
         for param in self.parameters():
+            # clamp
             param.data = param.data.clamp(min=0.)
 
             # project to doubly stochastic matrix
             param.data = project_doubly_stochastic(param.data)
-
 
     def forward(self, x):
         """

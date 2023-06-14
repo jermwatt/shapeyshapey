@@ -7,7 +7,7 @@ device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 INPUT_SIZE = 784
 NUM_CLASSES = 10
 LEARNING_RATE = 0.001
-BATCH_SIZE = 32
+BATCH_SIZE = 2
 NUM_EPOCHS = 3
 LEARNING_RATE = 0.001
 

@@ -10,6 +10,17 @@ class Encoder(nn.Module):
         super().__init__()
 
         self.net = nn.Sequential(
+            nn.Linear(width, height),
+            nn.Linear(width, height),
+            nn.Linear(width, height),
+            nn.Linear(width, height),
+            nn.Linear(width, height),
+            nn.Linear(width, height),
+            nn.Linear(width, height),
+            nn.Linear(width, height),
+            nn.Linear(width, height),
+            nn.Linear(width, height),
+            nn.Linear(width, height),
             nn.Linear(width, height)
         )
 
