@@ -19,13 +19,13 @@ def train_test_split_image_pairs(image_pairs, test_ratio=0.2):
 
 
 # pair off input images at random
-def get_random_image_pairs(images):
+def get_random_image_pairs(images, num_pairs):
     # Shuffle the list of images randomly
     random.shuffle(images)
 
     # Create pairs of images
     image_pairs = []
-    for i in range(0, len(images), 2):
+    for i in range(0, min(len(images),2*num_pairs), 2):
         # Ensure the last pair has two elements
         if i + 1 < len(images):
             image_pairs.append((images[i], images[i + 1]))
