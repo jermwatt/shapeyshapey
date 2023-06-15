@@ -1,8 +1,19 @@
 import torch
 import torch.nn.functional as F
+import torch.nn
 import pytorch_lightning as pl
 import torchvision
 from encoder import Encoder
+
+
+class SimpleLoss(torch.nn.Module):
+
+    def __init__(self):
+        super(SimpleLoss, self).__init__()
+
+    def forward(self, x, y):
+        totloss = torch.mean(torch.abs(x-y))
+        return totloss
 
 
 def project_doubly_stochastic(X, max_iter=10):
@@ -16,12 +27,26 @@ def project_doubly_stochastic(X, max_iter=10):
 
         # Normalize columns
         X /= X.sum(dim=0, keepdim=True)
+        
+    # Threshold each row and column to have a single entry of 1 and the rest as 0
+    # X = torch.where(X == X.max(dim=-1, keepdim=True).values, 1., 0.)
+    
+    # # Iterate over each row
+    # for i in range(X.size(0)):
+    #     # Find the index of the maximum value in the row
+    #     max_index = torch.argmax(X[i])
+        
+    #     # Set all values in the row to 0
+    #     X[i].zero_()
+        
+    #     # Set the first occurrence of the maximum value to 1
+    #     X[i, max_index] = 1
 
-    # # print row sum of X
-    # print('row sum of X is: ', torch.sum(X, dim=-1))   
-
-    # # print column sum of X
-    # print('column sum of X is: ', torch.sum(X, dim=0))
+    
+    # sum of each row and column should be 1
+    # print(X.shape)
+    # print('sum of each row is: ', torch.sum(X, dim=0))
+    # print(X)
 
     return X
 
@@ -49,21 +74,32 @@ class NN(pl.LightningModule):
 
         # set other class params
         self.lr = lr
-        self.loss_fn = F.l1_loss
+        # self.loss_fn = F.
+        self.loss_fn = SimpleLoss() #torch.nn.L1Loss()
         self.width = width
         self.height = height
+        
+        # list out parameters of model
+        # print('listing out parameter matrices')
+        # for W in self.parameters():
+        #     print(W.shape)
+            
 
     def optimizer_step(self, epoch, batch_idx, optimizer, optimizer_closure):
         # step
         optimizer.step(closure=optimizer_closure)
 
         # project
+        param_count = 0
         for param in self.parameters():
+            # print("-----------------")
+            # print('param count is: ', param_count)
             # clamp
             param.data = param.data.clamp(min=0.)
 
             # project to doubly stochastic matrix
             param.data = project_doubly_stochastic(param.data)
+            param_count += 1
 
     def forward(self, x):
         """
@@ -78,12 +114,17 @@ class NN(pl.LightningModule):
         x_hat = self.encoder(x)
         loss = self.loss_fn(x_hat, y)
         
+        # print(f'x shape is: {x.shape}')
+        # print(f'x_hat shape is: {x_hat.shape}')
+        # print(f'y shape is: {y.shape}')
+        # print(f'loss shape is: {loss.shape}')
+
         # print(f"batch_idx: {batch_idx}")
         # print(f"loss: {loss}")
         # print('sum of x is: ', torch.sum(x))
         # print('sum of x_hat is: ', torch.sum(x_hat))
         # print('sum of y is: ', torch.sum(y))
-        
+
         return loss, x, x_hat, y
 
     def training_step(self, batch, batch_idx):        

@@ -10,19 +10,19 @@ class Encoder(nn.Module):
         super().__init__()
 
         self.net = nn.Sequential(
-            nn.Linear(width, height),
-            nn.Linear(width, height),
-            nn.Linear(width, height),
-            nn.Linear(width, height),
-            nn.Linear(width, height),
-            nn.Linear(width, height),
-            nn.Linear(width, height),
-            nn.Linear(width, height),
-            nn.Linear(width, height),
-            nn.Linear(width, height),
-            nn.Linear(width, height),
-            nn.Linear(width, height)
-        )
+            nn.Linear(width, height,  bias=False),
+            nn.Linear(width, height,  bias=False),
+            nn.Linear(width, height,  bias=False),
+            nn.Linear(width, height,  bias=False),
+            nn.Linear(width, height,  bias=False),
+            nn.Linear(width, height,  bias=False),
+            nn.Linear(width, height,  bias=False),
+            nn.Linear(width, height,  bias=False),
+            nn.Linear(width, height,  bias=False),
+            nn.Linear(width, height,  bias=False),
+            nn.Linear(width, height,  bias=False),
+            nn.Linear(width, height,  bias=False)
+            )
 
     def forward(self, x):
         return self.net(x)
