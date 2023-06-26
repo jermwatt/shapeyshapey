@@ -1,0 +1,13 @@
+type: dev-environment
+build:
+  - apt-get update
+  - pip install -r requirements.txt
+ide: vscode
+
+# type: dev-environment
+# build:
+#   - apt-get update
+#   - apt-get install -y build-essential
+#   - apt-get install -y ffmpeg
+#   - pip install -r requirements.txt
+# ide: vscod

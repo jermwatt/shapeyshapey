@@ -17,16 +17,19 @@ class SimpleLoss(torch.nn.Module):
 
 
 def project_doubly_stochastic(X, max_iter=10):
-    # Ensure that the tensor is non-negative
-    X = torch.clamp(X, min=0)
+    # # Ensure that the tensor is non-negative
+    # X = torch.clamp(X, min=0)
 
-    # Normalize rows and columns iteratively
-    for _ in range(max_iter):
-        # Normalize rows
-        X /= X.sum(dim=-1, keepdim=True)
+    # # Normalize rows and columns iteratively
+    # for _ in range(max_iter):
+    #     # Normalize rows
+    #     X /= X.sum(dim=-1, keepdim=True)
 
-        # Normalize columns
-        X /= X.sum(dim=0, keepdim=True)
+    #     # Normalize columns
+    #     X /= X.sum(dim=0, keepdim=True)
+        
+        
+        
         
     # Threshold each row and column to have a single entry of 1 and the rest as 0
     # X = torch.where(X == X.max(dim=-1, keepdim=True).values, 1., 0.)

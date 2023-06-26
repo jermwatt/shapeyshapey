@@ -13,7 +13,7 @@ if __name__ == '__main__':
     # logger
     logger = TensorBoardLogger(
         save_dir=parent_dir + '/tb_logs',
-        name='mnist_model_v0'
+        name='puzzle_v0'
     )
 
     # Load Data
@@ -29,7 +29,7 @@ if __name__ == '__main__':
     # setup trainer
     trainer = pl.Trainer(logger=logger,
                          min_epochs=1,
-                         max_epochs=5,
+                         max_epochs=500,
                          accelerator=config.ACCELERATOR,
                          callbacks=[MyPrintingCallback(),
                                     EarlyStopping(monitor='val_loss')],
