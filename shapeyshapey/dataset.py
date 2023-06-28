@@ -13,8 +13,10 @@ from shape_data_def import ShapeDataset
 # parent of current file directory
 import os
 parent_dir = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-train_set_path = '/Users/wattjer/Desktop/shapeyshapey/shape_dataset/train-shape-images-idx3-ubyte'
-test_set_path = '/Users/wattjer/Desktop/shapeyshapey/shape_dataset/test-shape-images-idx3-ubyte'
+
+# current directory 
+train_set_path = parent_dir + '/shape_dataset/train-shape-images-idx3-ubyte'
+test_set_path = parent_dir + '/shape_dataset/test-shape-images-idx3-ubyte'
 
 
 class ShapeDataModule(pl.LightningDataModule): 

@@ -20,7 +20,7 @@ if __name__ == '__main__':
     dm = ShapeDataModule(
         data_dir=parent_dir + '/shape_dataset',
         batch_size=config.BATCH_SIZE,
-        num_workers=1
+        num_workers=4
     )
 
     # Initialize network
