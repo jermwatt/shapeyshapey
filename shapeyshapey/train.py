@@ -29,7 +29,7 @@ if __name__ == '__main__':
     # setup trainer
     trainer = pl.Trainer(logger=logger,
                          min_epochs=1,
-                         max_epochs=500,
+                         max_epochs=5000,
                          accelerator=config.ACCELERATOR,
                          callbacks=[MyPrintingCallback(),
                                     EarlyStopping(monitor='val_loss')],

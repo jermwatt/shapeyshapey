@@ -1,6 +1,0 @@
-profiles:
-  - name: small_shapey_test
-    project: aws_test
-    resources:
-       memory: 128GB
-    default: true
