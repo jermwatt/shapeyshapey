@@ -33,6 +33,16 @@ class Encoder(nn.Module):
             nn.Linear(width, height,  bias=False),
             nn.Linear(width, height,  bias=False),
             nn.Linear(width, height,  bias=False),
+            nn.Linear(width, height,  bias=False),
+            nn.Linear(width, height,  bias=False),
+            nn.Linear(width, height,  bias=False),
+            nn.Linear(width, height,  bias=False),
+            nn.Linear(width, height,  bias=False),
+            nn.Linear(width, height,  bias=False),
+            nn.Linear(width, height,  bias=False),
+            nn.Linear(width, height,  bias=False),
+            nn.Linear(width, height,  bias=False),
+            nn.Linear(width, height,  bias=False),
             nn.Linear(width, height,  bias=False)
             )
 
